@@ -13,7 +13,7 @@ abstract class Translation
      * @param string $language
      * @return array
      */
-    public function findMissingTranslations($language)
+    public function findMissingTranslations($language): array
     {
         return array_diff_assoc_recursive(
             $this->scanner->findTranslations(),
@@ -27,7 +27,7 @@ abstract class Translation
      * @param string $language
      * @return void
      */
-    public function saveMissingTranslations($language = false)
+    public function saveMissingTranslations($language = false): void
     {
         $languages = $language ? [$language => $language] : $this->allLanguages();
 
@@ -54,7 +54,7 @@ abstract class Translation
      * @param string $language
      * @return Collection
      */
-    public function getSourceLanguageTranslationsWith($language)
+    public function getSourceLanguageTranslationsWith($language): Collection
     {
         $sourceTranslations = $this->allTranslationsFor($this->sourceLanguage);
         $languageTranslations = $this->allTranslationsFor($language);
@@ -62,7 +62,7 @@ abstract class Translation
         return $sourceTranslations->map(function ($groups, $type) use ($language, $languageTranslations) {
             return $groups->map(function ($translations, $group) use ($type, $language, $languageTranslations) {
                 $translations = $translations->toArray();
-                array_walk($translations, function (&$value, &$key) use ($type, $group, $language, $languageTranslations) {
+                array_walk($translations, function (&$value, $key) use ($type, $group, $language, $languageTranslations) {
                     $value = [
                         $this->sourceLanguage => $value,
                         $language => $languageTranslations->get($type, collect())->get($group, collect())->get($key),
@@ -81,7 +81,7 @@ abstract class Translation
      * @param string $filter
      * @return Collection
      */
-    public function filterTranslationsFor($language, $filter)
+    public function filterTranslationsFor($language, $filter): Collection
     {
         $allTranslations = $this->getSourceLanguageTranslationsWith(($language));
         if (! $filter) {

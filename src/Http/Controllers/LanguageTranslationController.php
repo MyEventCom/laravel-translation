@@ -28,19 +28,35 @@ class LanguageTranslationController extends Controller
 
         $languages = $this->translation->allLanguages();
         $groups = $this->translation->getGroupsFor(config('app.locale'))->merge('single');
+
+
         $translations = $this->translation->filterTranslationsFor($language, $request->get('filter'));
 
         if ($request->has('group') && $request->get('group')) {
             if ($request->get('group') === 'single') {
                 $translations = $translations->get('single');
-                $translations = new Collection(['single' => $translations]);
+                $translations = collect(['single' => $translations]);
             } else {
                 $translations = $translations->get('group')->filter(function ($values, $group) use ($request) {
-                    return $group === $request->get('group');
+                    return (string)$group === (string)$request->get('group');
                 });
-
-                $translations = new Collection(['group' => $translations]);
+                $translations = collect(['group' => $translations]);
             }
+        }
+
+        if ($request->has('missing_translation')) {
+            $missingTranslations = [];
+            foreach ($translations as $parentKey => $translation) {
+                foreach ($translation as $key => $t) {
+                    foreach ($t as $k => $value) {
+                        if (empty($value[$language])) {
+                            $missingTranslations[$parentKey][$key][$k] = $value;
+                        }
+                    }
+                }
+            }
+
+            $translations = $missingTranslations;
         }
 
         return view('translation::languages.translations.index', compact('language', 'languages', 'groups', 'translations'));
@@ -67,7 +83,7 @@ class LanguageTranslationController extends Controller
 
     public function update(Request $request, $language)
     {
-        if (! Str::contains($request->get('group'), 'single')) {
+        if (!Str::contains($request->get('group'), 'single')) {
             $this->translation->addGroupTranslation($language, $request->get('group'), $request->get('key'), $request->get('value') ?: '');
         } else {
             $this->translation->addSingleTranslation($language, $request->get('group'), $request->get('key'), $request->get('value') ?: '');
