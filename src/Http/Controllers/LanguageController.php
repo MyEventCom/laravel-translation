@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Http\Requests\LanguageRequest;
+use JoeDixon\Translation\Language;
 
 class LanguageController extends Controller
 {
@@ -18,7 +19,7 @@ class LanguageController extends Controller
 
     public function index(Request $request)
     {
-        $languages = $this->translation->allLanguages();
+        $languages = Language::all();
 
         return view('translation::languages.index', compact('languages'));
     }

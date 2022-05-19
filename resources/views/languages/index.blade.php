@@ -28,19 +28,23 @@
                         <tr>
                             <th>{{ __('translation::translation.language_name') }}</th>
                             <th>{{ __('translation::translation.locale') }}</th>
+                            <th>{{ __('translation::translation.native') }}</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        @foreach($languages as $language => $name)
+                        @foreach($languages as $language)
                             <tr>
                                 <td>
-                                    {{ $name }}
+                                    {{ $language->name }}
                                 </td>
                                 <td>
                                     <a href="{{ route('languages.translations.index', $language) }}">
-                                        {{ $language }}
+                                        {{ $language->language }}
                                     </a>
+                                </td>
+                                <td>
+                                    {{ $language->native }}
                                 </td>
                             </tr>
                         @endforeach
