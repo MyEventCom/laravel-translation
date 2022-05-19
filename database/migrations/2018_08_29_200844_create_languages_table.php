@@ -19,20 +19,9 @@ class CreateLanguagesTable extends Migration
                 $table->increments('id');
                 $table->string('name')->nullable();
                 $table->string('language');
-                $table->string('native');
+                $table->string('native')->nullable();
                 $table->timestamps();
             });
-
-        $initialLanguages = array_unique([
-            config('app.fallback_locale'),
-            config('app.locale'),
-        ]);
-
-        foreach ($initialLanguages as $language) {
-            Language::firstOrCreate([
-                'language' => $language,
-            ]);
-        }
     }
 
     /**
