@@ -74,10 +74,13 @@ class Database extends Translation implements DriverInterface
     /**
      * Add a new language to the application.
      *
-     * @param string $language
+     * @param  string $language
+     * @param  string $name
+     * @param  string $native
      * @return void
+     * @throws LanguageExistsException
      */
-    public function addLanguage($language, $name = null)
+    public function addLanguage($language, $name = null, $native = null)
     {
         if ($this->languageExists($language)) {
             throw new LanguageExistsException(__('translation::errors.language_exists', ['language' => $language]));
@@ -86,6 +89,7 @@ class Database extends Translation implements DriverInterface
         Language::create([
             'language' => $language,
             'name' => $name,
+            'native' => $native,
         ]);
     }
 

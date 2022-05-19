@@ -22,6 +22,8 @@
 
                     @include('translation::forms.text', ['field' => 'locale', 'label' => __('translation::translation.locale'), ])
 
+                    @include('translation::forms.text', ['field' => 'native', 'label' => __('translation::translation.native'), ])
+
                 </div>
 
             </fieldset>

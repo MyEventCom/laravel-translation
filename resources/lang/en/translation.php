@@ -21,6 +21,7 @@ return [
     'translations' => 'Translation',
     'language_name' => 'Name',
     'locale' => 'Locale',
+    'native' => 'Native name',
     'add' => '+ Add',
     'add_language' => 'Add a new language',
     'save' => 'Save',
