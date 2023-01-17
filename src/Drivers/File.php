@@ -213,13 +213,13 @@ class File extends Translation implements DriverInterface
 
             $path = Str::before(
                 Str::after($group->getPathname(), $language . DIRECTORY_SEPARATOR),
-                DIRECTORY_SEPARATOR
+                DIRECTORY_SEPARATOR . $group->getBasename()
             );
 
             if (Str::endsWith(Str::replace('.php', '', $path) , $group->getBasename('.php'))) {
                 $path = '';
             } else {
-                $path .= ':';
+                $path .= '/';
             }
 
             $filename = $path . $group->getBasename('.php');
@@ -368,13 +368,13 @@ class File extends Translation implements DriverInterface
 
             $path = Str::before(
                 Str::after($file->getPathname(), $language . DIRECTORY_SEPARATOR),
-                DIRECTORY_SEPARATOR
+                DIRECTORY_SEPARATOR . $file->getBasename()
             );
 
             if (Str::endsWith(Str::replace('.php', '', $path) , $file->getBasename('.php'))) {
                 $path = '';
             } else {
-                $path .= ':';
+                $path .= '/';
             }
 
             return $path . $file->getBasename('.php');
