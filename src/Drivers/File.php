@@ -195,7 +195,7 @@ class File extends Translation implements DriverInterface
      */
     public function getGroupTranslationsFor($language)
     {
-        return $this->getGroupFilesFor($language)->mapWithKeys(function ($group) {
+        return $this->getGroupFilesFor($language)->mapWithKeys(function ($group) use ($language) {
             // here we check if the path contains 'vendor' as these will be the
             // files which need namespacing
             if (Str::contains($group->getPathname(), 'vendor')) {
@@ -211,21 +211,18 @@ class File extends Translation implements DriverInterface
                 $value = [];
             }
 
-            $array = explode('\\', $group->getPathname());
+            $path = Str::before(
+                Str::after($group->getPathname(), $language . DIRECTORY_SEPARATOR),
+                DIRECTORY_SEPARATOR
+            );
 
-            $addToArray = false;
-            $temp = [];
-            foreach ($array as $key => $v) {
-                if ($addToArray) {
-                    $temp[] = $v;
-                }
-
-                if (in_array($v, $this->allLanguages()->toArray())) {
-                    $addToArray = true;
-                }
+            if (Str::endsWith(Str::replace('.php', '', $path) , $group->getBasename('.php'))) {
+                $path = '';
+            } else {
+                $path .= ':';
             }
-            $filename = basename(implode('.', $temp), '.php');
 
+            $filename = $path . $group->getBasename('.php');
 
             return [$filename => collect(Arr::dot($value))];
         });
@@ -360,7 +357,7 @@ class File extends Translation implements DriverInterface
      */
     public function getGroupsFor($language)
     {
-        return $this->getGroupFilesFor($language)->map(function ($file) {
+        return $this->getGroupFilesFor($language)->map(function ($file) use ($language) {
             if (Str::contains($file->getPathname(), 'vendor')) {
                 $vendor = Str::before(
                     Str::after($file->getPathname(), 'vendor' . DIRECTORY_SEPARATOR),
@@ -368,19 +365,19 @@ class File extends Translation implements DriverInterface
                 );
                 return "{$vendor}::{$file->getBasename('.php')}";
             }
-            $array = explode('\\', $file->getPathname());
 
-            $addToArray = false;
-            $temp = [];
-            foreach ($array as $key => $value) {
-                if ($addToArray) {
-                    $temp[] = $value;
-                }
-                if (in_array($value, $this->allLanguages()->toArray())) {
-                    $addToArray = true;
-                }
+            $path = Str::before(
+                Str::after($file->getPathname(), $language . DIRECTORY_SEPARATOR),
+                DIRECTORY_SEPARATOR
+            );
+
+            if (Str::endsWith(Str::replace('.php', '', $path) , $file->getBasename('.php'))) {
+                $path = '';
+            } else {
+                $path .= ':';
             }
-            return basename(implode('.', $temp), '.php');
+
+            return $path . $file->getBasename('.php');
         });
     }
 
