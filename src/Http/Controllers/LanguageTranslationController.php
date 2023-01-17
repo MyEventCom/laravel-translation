@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use JoeDixon\Translation\Drivers\Translation;
 use JoeDixon\Translation\Http\Requests\TranslationRequest;
+use JoeDixon\Translation\Language;
 
 class LanguageTranslationController extends Controller
 {
@@ -26,7 +27,7 @@ class LanguageTranslationController extends Controller
                 ->route('languages.translations.index', ['language' => $request->get('language'), 'group' => $request->get('group'), 'filter' => $request->get('filter')]);
         }
 
-        $languages = $this->translation->allLanguages();
+        $languages = Language::all()->pluck('language', 'language');
         $groups = $this->translation->getGroupsFor(config('app.locale'))->merge('single');
 
 
